@@ -11,7 +11,7 @@ from PIL import Image
 from data import SRTrainDataset
 from model.drln import make_model
 
-LOAD_MODEL = os.path.join("result","latest.pth")
+LOAD_MODEL = os.path.join("result","load.pth")
 
 epochs = 1000000
 
@@ -26,12 +26,14 @@ train_loader = DataLoader(trainset, num_workers=16, batch_size=16, shuffle=True)
 
 drln  = make_model(None).to(device)
 if os.path.isfile(LOAD_MODEL):
+    print("load model...",end="")
     drln.load_state_dict(torch.load(LOAD_MODEL))
+    print("done")
 
 criterion  = nn.L1Loss()
 
 # optimizer = optim.SGD(drln.parameters(), lr=0.00001, momentum=0.9)
-optimizer = optim.Adam(drln.parameters(), lr=0.0008, betas=(0.9, 0.999), eps=1e-08, weight_decay=0)
+optimizer = optim.Adam(drln.parameters(), lr=0.00008, betas=(0.9, 0.999), eps=1e-08, weight_decay=0)
 stepLR = optim.lr_scheduler.StepLR(optimizer, 2e5, gamma=0.5)
 
 
