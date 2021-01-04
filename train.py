@@ -56,8 +56,6 @@ optimizer = optim.Adam(drln.parameters(), lr=0.00005, betas=(0.9, 0.999), eps=1e
 stepLR = optim.lr_scheduler.StepLR(optimizer, 3e02, gamma=0.5)
 
 
-img = Image.open('01.png').crop((60,60,108,108))
-
 iter_num = 0
 best_loss = 0.05782179960182735
 
