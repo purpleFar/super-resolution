@@ -91,10 +91,10 @@ class DRLN(nn.Module):
         self.b14 = Block(chs, chs)
         self.b15 = Block(chs, chs)
         self.b16 = Block(chs, chs)
-        # self.b17 = Block(chs, chs)
-        # self.b18 = Block(chs, chs)
-        # self.b19 = Block(chs, chs)
-        # self.b20 = Block(chs, chs)
+        self.b17 = Block(chs, chs)
+        self.b18 = Block(chs, chs)
+        self.b19 = Block(chs, chs)
+        self.b20 = Block(chs, chs)
         
         # self.b21 = Block(chs, chs)
         # self.b22 = Block(chs, chs)
@@ -117,10 +117,10 @@ class DRLN(nn.Module):
         self.c14 = ops.BasicBlock(chs*3, chs, 3, 1, 1)
         self.c15 = ops.BasicBlock(chs*4, chs, 3, 1, 1)
         self.c16 = ops.BasicBlock(chs*5, chs, 3, 1, 1)
-        # self.c17 = ops.BasicBlock(chs*2, chs, 3, 1, 1)
-        # self.c18 = ops.BasicBlock(chs*3, chs, 3, 1, 1)
-        # self.c19 = ops.BasicBlock(chs*4, chs, 3, 1, 1)
-        # self.c20 = ops.BasicBlock(chs*5, chs, 3, 1, 1)
+        self.c17 = ops.BasicBlock(chs*2, chs, 3, 1, 1)
+        self.c18 = ops.BasicBlock(chs*3, chs, 3, 1, 1)
+        self.c19 = ops.BasicBlock(chs*4, chs, 3, 1, 1)
+        self.c20 = ops.BasicBlock(chs*5, chs, 3, 1, 1)
         
         # self.c21 = ops.BasicBlock(chs*2, chs, 3, 1, 1)
         # self.c22 = ops.BasicBlock(chs*3, chs, 3, 1, 1)
@@ -130,6 +130,7 @@ class DRLN(nn.Module):
         self.upsample = ops.UpsampleBlock(chs, self.scale , multi_scale=False)
         #self.convert = ops.ConvertBlock(chs, chs, 20)
         self.tail = nn.Conv2d(chs, 3, 3, 1, 1)
+        self.sigmoid = nn.Sigmoid()
                 
     def forward(self, x, mask):
         x = self.sub_mean(x)
@@ -209,24 +210,24 @@ class DRLN(nn.Module):
         a5 = o16 + a4
 
 
-        # b17 = self.b17(a5)
-        # c17 = torch.cat([o16, b17], dim=1)
-        # o17 = self.c17(c17)
+        b17 = self.b17(a5)
+        c17 = torch.cat([o16, b17], dim=1)
+        o17 = self.c17(c17)
 
-        # b18 = self.b18(o17)
-        # c18 = torch.cat([c17, b18], dim=1)
-        # o18 = self.c18(c18)
+        b18 = self.b18(o17)
+        c18 = torch.cat([c17, b18], dim=1)
+        o18 = self.c18(c18)
 
 
-        # b19 = self.b19(o18)
-        # c19 = torch.cat([c18, b19], dim=1)
-        # o19 = self.c19(c19)
+        b19 = self.b19(o18)
+        c19 = torch.cat([c18, b19], dim=1)
+        o19 = self.c19(c19)
 
-        # b20 = self.b20(o19)
-        # c20 = torch.cat([c19, b20], dim=1)
-        # o20 = self.c20(c20)
+        b20 = self.b20(o19)
+        c20 = torch.cat([c19, b20], dim=1)
+        o20 = self.c20(c20)
         
-        # a6 = o20 + a5
+        a6 = o20 + a5
         
         
         # b21 = self.b21(a6)
@@ -248,12 +249,12 @@ class DRLN(nn.Module):
         
         # a7 = o24 + a6
 
-        b_out = a5 + x # b_out = a6 + x
+        b_out = a6 + x # b_out = a6 + x
         out = self.upsample(b_out, scale=self.scale )
 
         out = self.tail(out)
-        f_out = self.add_mean(out)
-
+        f_out = torch.clamp(self.add_mean(out), 0, 1)
+        
         return f_out*mask
         
     def load_state_dict(self, state_dict, strict=False):

@@ -26,7 +26,7 @@ class MyHSVTransform:
         trans_list = [TF.adjust_brightness, TF.adjust_contrast, TF.adjust_gamma, TF.adjust_saturation]
         random.shuffle(trans_list)
         for my_trans in trans_list:
-            x = my_trans(x, random.uniform(0.8,1.2))
+            x = my_trans(x, random.uniform(0.5,1.5))
         return x
 
 def input_transform(hr_size, pad, angles, h_p, v_p):
@@ -54,14 +54,14 @@ def mask_transform(angles, h_p, v_p):
 
 
 class SRDataset(data.Dataset):
-    def __init__(self, img_dir, lr_size=(32,32), scale=3, angles=0, trainset=True, show=False):
+    def __init__(self, img_dir, lr_size=(64,64), scale=3, angles=0, mode='train', show=False):
         super(SRDataset, self).__init__()
         path_pattern = os.path.join(img_dir, "*.*")
-        self.trainset = trainset
+        self.mode = mode
         self.show = show
         self.filename_list = glob.glob(path_pattern, recursive=True)
         self.input_transform = trans.RandomCrop
-        if trainset:
+        if mode=='train':
             self.input_transform = input_transform
         self.lr_size = lr_size
         self.norm_trans = trans.ToTensor()
@@ -73,12 +73,16 @@ class SRDataset(data.Dataset):
         img = Image.open(input_file)
         width, height = img.size
         self.hr_size = (self.lr_size[0]*self.scale, self.lr_size[1]*self.scale)
-        if not self.trainset:
+        if self.mode=='inference':
+            patch_lr = img
+            patch_hr = 0
+            mask = torch.ones((3,height*3,width*3))
+        elif self.mode=='val':
             patch_hr = self.input_transform((height//3*3,width//3*3))(img)
-            patch_lr = trans.Resize((height//3,width//3))(patch_hr)
+            patch_lr = trans.Resize((height//3,width//3), interpolation=Image.NEAREST)(patch_hr)
             patch_hr = self.norm_trans(patch_hr)
             mask = torch.ones(patch_hr.shape)
-        else:
+        elif self.mode=='train':
             pad = [0, 0, 0, 0]
             if self.hr_size[0] > height:
                 pad[3] = self.hr_size[0]-height
@@ -87,7 +91,7 @@ class SRDataset(data.Dataset):
             pad = tuple(pad)
             h_p, v_p = random.randint(0,1), random.randint(0,1)
             patch_hr = self.input_transform(self.hr_size, pad, self.angles, h_p, v_p)(img)
-            patch_lr = trans.Resize(self.lr_size)(patch_hr)
+            patch_lr = trans.Resize(self.lr_size, interpolation=Image.NEAREST)(patch_hr)
             patch_hr = self.norm_trans(patch_hr)
             mask = torch.ones(patch_hr.shape)
             if pad[3] > 0:
@@ -108,7 +112,7 @@ def test():
     trainset.show = True
     x = trainset[k]
     x[0].show()
-    x[1].show()
+    trans.ToPILImage()(x[1]).show()
 
 if __name__ == "__main__":
     test()
