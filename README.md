@@ -37,7 +37,7 @@ $ pip install -r requirements.txt
 ```
 
 ## Download Data
-The 291 training data download at [here](https://drive.google.com/drive/u/3/folders/1H-sIY7zj42Fex1ZjxxSC3PV1pK4Mij6x).  
+The training data download at [here](https://drive.google.com/drive/u/3/folders/1H-sIY7zj42Fex1ZjxxSC3PV1pK4Mij6x).  
 Unzip them then you can see following structure:
 ```
 super-resolution/
