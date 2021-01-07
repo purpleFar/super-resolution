@@ -73,13 +73,15 @@ class SRDataset(data.Dataset):
         img = Image.open(input_file)
         width, height = img.size
         self.hr_size = (self.lr_size[0]*self.scale, self.lr_size[1]*self.scale)
+        interpolation_list = [Image.NEAREST, Image.BOX, Image.BILINEAR, Image.HAMMING, Image.BICUBIC, Image.LANCZOS]
+        interpolation_list = [Image.NEAREST]
         if self.mode=='inference':
             patch_lr = img
-            patch_hr = 0
+            patch_hr = input_file
             mask = torch.ones((3,height*3,width*3))
         elif self.mode=='val':
             patch_hr = self.input_transform((height//3*3,width//3*3))(img)
-            patch_lr = trans.Resize((height//3,width//3), interpolation=Image.NEAREST)(patch_hr)
+            patch_lr = trans.Resize((height//3,width//3), interpolation=random.choice(interpolation_list))(patch_hr)
             patch_hr = self.norm_trans(patch_hr)
             mask = torch.ones(patch_hr.shape)
         elif self.mode=='train':
@@ -91,7 +93,7 @@ class SRDataset(data.Dataset):
             pad = tuple(pad)
             h_p, v_p = random.randint(0,1), random.randint(0,1)
             patch_hr = self.input_transform(self.hr_size, pad, self.angles, h_p, v_p)(img)
-            patch_lr = trans.Resize(self.lr_size, interpolation=Image.NEAREST)(patch_hr)
+            patch_lr = trans.Resize(self.lr_size, interpolation=random.choice(interpolation_list))(patch_hr)
             patch_hr = self.norm_trans(patch_hr)
             mask = torch.ones(patch_hr.shape)
             if pad[3] > 0:
