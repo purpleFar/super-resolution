@@ -11,7 +11,7 @@
     </a>
 </p>
 
-This repository gathers is the code for homework in class.
+This repository gathers is the code for homework in class.  
 To read the detailed for what is this, please, refer to [my report](https://github.com/purpleFar/super-resolution/blob/master/readme_file/HW4_Report_0856735.pdf).
 
 ## Hardware
@@ -87,13 +87,13 @@ super-resolution/
 ```
 
 ## Inference
-If trained weights are prepared, you can create a folder containing the high resolution image for each picture in test set.  
+If trained weights are prepared, you can create a folder containing high-resolution images from `testing_lr_images`.  
 Using the pre-trained model, enter the command:
 ```bash=
 $ python make_submit.py
 ```
 or
 
-If you want to train your model from scratch. Then the training code will also make the high-resolution image which is from `testing_lr_images` folder.
+If you want to train your model from scratch. Then the training code will also make the high-resolution image which is from `testing_lr_images`.
 
 And you can see high-resolution images in folder which names `submit`.
