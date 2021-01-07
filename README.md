@@ -12,7 +12,7 @@
 </p>
 
 This repository gathers is the code for homework in class.  
-To read the detailed for what is this, please, refer to [my report](https://github.com/purpleFar/super-resolution/blob/master/readme_file/HW4_Report_0856735.pdf).
+To read the detailed for what is this, please, refer to [my report](https://github.com/purpleFar/super-resolution/blob/master/HW4_Report_0856735.pdf).
 
 ## Hardware
 The following specs were used to create the original solution.
