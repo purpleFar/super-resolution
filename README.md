@@ -28,7 +28,8 @@ To reproduct my result without retrainig, do the following steps:
 4. [Inference](#inference)
 
 ## Installation
-All requirements should be detailed in requirements.txt. Using Anaconda is strongly recommended.
+All requirements should be detailed in requirements.txt.  
+Using Anaconda is strongly recommended.
 ```bash=
 $ conda create -n  hw1 python=3.6
 $ conda activate drln_sr
@@ -36,7 +37,7 @@ $ pip install -r requirements.txt
 ```
 
 ## Download Data
-The 291 training data download at [here](https://drive.google.com/drive/u/3/folders/1H-sIY7zj42Fex1ZjxxSC3PV1pK4Mij6x).
+The 291 training data download at [here](https://drive.google.com/drive/u/3/folders/1H-sIY7zj42Fex1ZjxxSC3PV1pK4Mij6x).  
 Unzip them then you can see following structure:
 ```
 super-resolution/
@@ -70,7 +71,7 @@ $ python train.py
 ```
 
 ## Pretrained models
-You can download pretrained model that used for my submission from [link](https://drive.google.com/file/d/1CGk4_meBMrPJuSDVh7Q03hTOWlrsXCAa/view?usp=sharing).
+You can download pretrained model that used for my submission from [link](https://drive.google.com/file/d/1CGk4_meBMrPJuSDVh7Q03hTOWlrsXCAa/view?usp=sharing).  
 Unzip it and put into structure like below:
 ```
 super-resolution/
@@ -86,8 +87,7 @@ super-resolution/
 ```
 
 ## Inference
-If trained weights are prepared, you can create a folder containing the high resolution image for each picture in test set.
-
+If trained weights are prepared, you can create a folder containing the high resolution image for each picture in test set.  
 Using the pre-trained model, enter the command:
 ```bash=
 $ python make_submit.py
