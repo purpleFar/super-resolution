@@ -21,6 +21,8 @@ if not os.path.isdir(save_path):
   os.mkdir(save_path)
   
 drln  = make_model(None).to(device)
+drln.stop_block = 7
+drln.eval()
 if os.path.isfile(LOAD_MODEL):
     print("load model...",end="")
     drln.load_state_dict(torch.load(LOAD_MODEL))
